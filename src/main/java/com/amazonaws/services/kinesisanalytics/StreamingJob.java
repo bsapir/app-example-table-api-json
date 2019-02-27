@@ -111,8 +111,14 @@ public class StreamingJob {
         Table outputTable = inputTable
                 .window(Tumble.over("1.minutes").on("timestamp").as("w"))
                 .groupBy("w, appName")
-                .select("appName, w.start, w.end, version.min as minVersion, version.max as maxVersion, version.count as versionCount ");
-
+                .select("'q1' as queryid, appName, w.start, w.end, version.min as minVersion, version.max as maxVersion, version.count as versionCount ");
+        
+        //use table api for Tumbling window then group by application name and emit result
+        Table outputTable2 = inputTable
+                .window(Tumble.over("1.minutes").on("timestamp").as("w"))
+                .groupBy("w, appName")
+                .select("'q2' as queryid, appName, w.start, w.end, version.min as minVersion, version.max as maxVersion, version.count as versionCount ");
+     
         //write input to log4j sink for debugging
         inputTable.writeToSink(new Log4jTableSink("Input"));
 
@@ -120,8 +126,12 @@ public class StreamingJob {
         outputTable.writeToSink(new Log4jTableSink("Output"));
 
         //write output to kinesis stream
-        outputTable.writeToSink(new KinesisTableSink(kinesisOutputSink));
-
+        //outputTable.writeToSink(new KinesisTableSink(kinesisOutputSink));
+        
+        KinesisTableSink mySink = new KinesisTableSink(kinesisOutputSink);
+        outputTable.writeToSink(mySink);
+        outputTable2.writeToSink(mySink);
+        
         env.execute();
     }
 
