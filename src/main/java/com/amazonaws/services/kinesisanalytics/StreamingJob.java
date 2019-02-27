@@ -130,7 +130,7 @@ public class StreamingJob {
         
         KinesisTableSink mySink = new KinesisTableSink(kinesisOutputSink);
         outputTable.writeToSink(mySink);
-        outputTable2.writeToSink(mySink);
+        //outputTable2.writeToSink(mySink);
         
         env.execute();
     }
