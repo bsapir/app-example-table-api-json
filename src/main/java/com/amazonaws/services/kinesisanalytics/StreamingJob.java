@@ -95,8 +95,13 @@ public class StreamingJob {
         // Notes: input data stream is a json formatted string
         DataStream<String> inputStream = getInputDataStream(env, inputStreamName, region);
 
-        // Add kinesis output
-        FlinkKinesisProducer<String> kinesisOutputSink = getKinesisOutputSink(outputStreamName, region);
+        // Add kinesis output1
+        FlinkKinesisProducer<String> kinesisOutputSink = getKinesisOutputSink(outputStreamName, region, "onekeyh7fdg8ffgt");
+        
+        // Add kinesis output2
+        FlinkKinesisProducer<String> kinesisOutputSink2 = getKinesisOutputSink(outputStreamName, region, "twokeyh8fgdfdhh");
+                
+        
 
         StreamTableEnvironment tableEnv = TableEnvironment.getTableEnvironment(env);
         
@@ -129,13 +134,15 @@ public class StreamingJob {
         //outputTable.writeToSink(new KinesisTableSink(kinesisOutputSink));
         
         KinesisTableSink mySink = new KinesisTableSink(kinesisOutputSink);
+        KinesisTableSink mySink2 = new KinesisTableSink(kinesisOutputSink2);
+        
         outputTable.writeToSink(mySink);
-        //outputTable2.writeToSink(mySink);
+        outputTable2.writeToSink(mySink2);
         
         env.execute();
     }
 
-    private static FlinkKinesisProducer<String> getKinesisOutputSink(String outputStreamName, String region) {
+    private static FlinkKinesisProducer<String> getKinesisOutputSink(String outputStreamName, String region,String partionKey) {
         Properties producerConfig = new Properties();
         // Required configs
         producerConfig.put(AWSConfigConstants.AWS_REGION, region);
@@ -149,7 +156,7 @@ public class StreamingJob {
         FlinkKinesisProducer<String> kinesis = new FlinkKinesisProducer<>(new SimpleStringSchema(), producerConfig);
         kinesis.setFailOnError(true);
         kinesis.setDefaultStream(outputStreamName);
-        kinesis.setDefaultPartition("0");
+        kinesis.setDefaultPartition(partionKey);
         return kinesis;
     }
 
