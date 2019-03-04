@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.Date;
 
 public class CsvToAppModelStream {
@@ -51,7 +53,8 @@ public class CsvToAppModelStream {
                             csvFields[CSV_APP_NAME_COL_INDEX],
                             csvFields[CSV_APP_ID_COL_INDEX],
                             version,
-                            timestamp
+                            timestamp,
+                            Timestamp.from(Instant.now(Clock.systemUTC()))
                     );
 
                 }).returns(AppModel.class)

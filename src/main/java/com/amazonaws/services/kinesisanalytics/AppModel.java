@@ -3,6 +3,8 @@ package com.amazonaws.services.kinesisanalytics;
 import com.google.gson.annotations.SerializedName;
 
 import java.sql.Timestamp;
+import java.time.Clock;
+import java.time.Instant;
 
 /**
  * App POJO class
@@ -15,11 +17,12 @@ public class AppModel {
 
     }
 
-    public AppModel(String appName, String appId, Integer version, Timestamp timestamp) {
+    public AppModel(String appName, String appId, Integer version, Timestamp timestamp, Timestamp processingTimestamp) {
         this.appName = appName;
         this.appSessionId = appId;
         this.version = version;
         this.timestamp = timestamp;
+        this.processingTimestamp = processingTimestamp;
 
     }
 
@@ -34,6 +37,8 @@ public class AppModel {
 
     @SerializedName("Timestamp")
     private Timestamp timestamp;
+
+    private Timestamp processingTimestamp;
 
     public void setAppSessionId(String appSessionId) {
         this.appSessionId = appSessionId;
@@ -53,6 +58,24 @@ public class AppModel {
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public void setProcessingTimestamp(Timestamp timestamp) {
+        this.processingTimestamp = timestamp;
+    }
+
+    /**
+     * helper method to initialize processing timestamp while deserializing input json
+     * @param processingTimestamp
+     * @return
+     */
+    public AppModel withProcessingTime(Timestamp processingTimestamp) {
+        this.processingTimestamp = processingTimestamp;
+        return this;
+    }
+
+    public Timestamp getProcessingTimestamp() {
+        return this.processingTimestamp;
     }
 
     public Timestamp getTimestamp() {

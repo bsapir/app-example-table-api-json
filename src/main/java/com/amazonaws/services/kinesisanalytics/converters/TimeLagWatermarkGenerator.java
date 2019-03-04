@@ -11,7 +11,7 @@ public class TimeLagWatermarkGenerator implements AssignerWithPeriodicWatermarks
 
     @Override
     public long extractTimestamp(AppModel app, long previousElementTimestamp) {
-        return app.getTimestamp().toInstant().toEpochMilli();
+        return app.getProcessingTimestamp().toInstant().toEpochMilli();
     }
 
     @Override
